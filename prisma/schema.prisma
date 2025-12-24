@@ -12,10 +12,29 @@ model Game {
   name      String
   slug      String   @unique
   publisher String?
+  imageUrl  String?  @map("image_url") 
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
 
+  products  Product[]
+
   @@map("games")
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  gameId    Int      @map("game_id")
+  name      String
+  price     Int
+  isActive  Boolean @map("is_active") @default(true)
+  skuProvider String?  @map("sku_provider")
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@map("products")
+  @@index([gameId])
 }
 
 

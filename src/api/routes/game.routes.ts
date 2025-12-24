@@ -6,5 +6,3 @@ const router = Router();
 router.get("/games", getGames);
 
 export default router;
-
-

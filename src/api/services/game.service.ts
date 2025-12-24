@@ -1,8 +1,8 @@
+import type { Game } from "@prisma/client";
 import { GameRepository } from "../repositories/game.repository";
 
 export const GameService = {
-  async getGames() {
-    // Temp: tidak ada bisnis logic rumit, hanya ambil semua game.
+  async getGames(): Promise<Game[]> {
     return GameRepository.findAll();
   },
 };
