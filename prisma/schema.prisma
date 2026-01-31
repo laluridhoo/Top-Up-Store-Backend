@@ -32,9 +32,73 @@ model Product {
   updatedAt DateTime @map("updated_at") @updatedAt
 
   game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  ordeItems OrderItem[]
 
   @@map("products")
   @@index([gameId])
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  userId    String   @map("user_id")
+  totalPrice Int     @map("total_price")
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+
+  items     OrderItem[]
+  transaction Transaction?
+
+  @@map("orders")
+  @@index([userId])
+  @@index([status])
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int      @map("order_id")
+  productId Int      @map("product_id")
+  quantity  Int      @default(1)
+  price     Int
+  createdAt DateTime @map("created_at") @default(now())
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
+  @@index([orderId])
+  @@index([productId])
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+}
+
+model Transaction {
+  id            Int      @id @default(autoincrement())
+  orderId       Int      @unique @map("order_id")
+  paymentMethod String?  @map("payment_method")
+  paymentId     String?  @map("payment_id")
+  status        TransactionStatus @default(PENDING)
+  createdAt     DateTime @map("created_at") @default(now())
+  updatedAt     DateTime @map("updated_at") @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+  @@index([orderId])
+  @@index([status])
 }
 
 
