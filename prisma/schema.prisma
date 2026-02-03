@@ -88,6 +88,7 @@ enum TransactionStatus {
 model Transaction {
   id            Int      @id @default(autoincrement())
   orderId       Int      @unique @map("order_id")
+  snapToken     String?  @map("snap_token")
   paymentMethod String?  @map("payment_method")
   paymentId     String?  @map("payment_id")
   status        TransactionStatus @default(PENDING)
